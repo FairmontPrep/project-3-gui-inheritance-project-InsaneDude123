@@ -16,18 +16,21 @@ import javax.imageio.ImageIO;
 abstract class HappyMeal extends JPanel {
 
     private BufferedImage happyMealOutlineImage;
+    protected JLabel baseLabel;
 
     public HappyMeal() {
 
         loadImage();
 
+        baseLabel = new JLabel("Look!");
+        baseLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        baseLabel.setForeground(Color.BLACK);
+        baseLabel.setBounds(20, 20, 200, 20); // Position the label
+        add(baseLabel);
+
     }
 
-    
-
     protected abstract void loadImage();
-
-    
 
     protected void setHappyMealOutlineImage(String filePath) {
 
@@ -42,8 +45,6 @@ abstract class HappyMeal extends JPanel {
         }
 
     }
-
-    
 
     protected BufferedImage getHappyMealOutlineImage() {
 
@@ -78,6 +79,8 @@ class HappyMealWithNuggets extends HappyMeal {
     public HappyMealWithNuggets() {
 
         super();
+
+        baseLabel.setText(baseLabel.getText() + " Your Happy Meal");
 
     }
 
@@ -125,6 +128,8 @@ class HappyMealWithFries extends HappyMealWithNuggets {
 
         super();
 
+        baseLabel.setText(baseLabel.getText() + " came with");
+
     }
 
     @Override
@@ -163,13 +168,17 @@ class HappyMealWithFries extends HappyMealWithNuggets {
 
 // Great-grandchild class: Adds milk instead of coke
 
-class HappyMealWithMilk extends HappyMealWithFries {
+class HappyMealWithDrink extends HappyMealWithFries {
 
-    private BufferedImage milkImage;
+    private BufferedImage drinkImage;
 
-    public HappyMealWithMilk() {
+    private String s;
+
+    public HappyMealWithDrink() {
 
         super();
+
+        baseLabel.setText(baseLabel.getText() + s);
 
     }
 
@@ -181,7 +190,16 @@ class HappyMealWithMilk extends HappyMealWithFries {
 
         try {
 
-            milkImage = ImageIO.read(new File("happyMealMilk.png"));
+            Random random = new Random();
+            int n = random.nextInt(2)+1;
+
+            if (n == 1){
+                drinkImage = ImageIO.read(new File("happyMealMilk.png"));
+                s = " milk!";
+            }else{
+                drinkImage = ImageIO.read(new File("happyMealCoke.png"));
+                s = " coke!";
+            }
 
         } catch (IOException e) {
 
@@ -197,55 +215,9 @@ class HappyMealWithMilk extends HappyMealWithFries {
 
         super.paintComponent(g);
 
-        if (milkImage != null) {
+        if (drinkImage != null) {
 
-            g.drawImage(milkImage, 0, 0, this);
-
-        }
-
-    }
-
-}
-
-//second great-grandchild class: Add coke instead of milk
-
-class HappyMealWithCoke extends HappyMealWithFries {
-
-    private BufferedImage cokeImage;
-
-    public HappyMealWithCoke() {
-
-        super();
-
-    }
-
-    @Override
-
-    protected void loadImage() {
-
-        super.loadImage();
-
-        try {
-
-            cokeImage = ImageIO.read(new File("happyMealCoke.png"));
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-        }
-
-    }
-
-    @Override
-
-    protected void paintComponent(Graphics g) {
-
-        super.paintComponent(g);
-
-        if (cokeImage != null) {
-
-            g.drawImage(cokeImage, 0, 0, this);
+            g.drawImage(drinkImage, 0, 0, this);
 
         }
 
@@ -271,18 +243,7 @@ public class HappyMealGUI {
 
             // Demonstrating polymorphism
 
-            HappyMeal meal;
-
-            Random random = new Random();
-            int n = random.nextInt(2)+1;
-
-            if (n == 1){
-                meal = new HappyMealWithCoke();
-                System.out.println("You got Coke!");
-            }else{
-                meal = new HappyMealWithMilk();
-                System.out.println("You got Milk!");
-            }
+            HappyMeal meal = new HappyMealWithDrink();
 
             frame.add(meal);
 
